@@ -1,13 +1,11 @@
-var _ = require("underscore")
+var Common = require("./common")
   , Message = require("./message");
 
-function MessageParser(emitter) {
-  this.emitter = emitter;
-}
+function MessageParser() {}
 MessageParser.prototype = {
   buffer: '',
   add: function(data) {
-    console.log("data byte length: "+ data.length);
+    Common.logger.log("data byte length: "+ data.length);
     this.buffer += data.toString('utf8');
     this.parse();
   },
@@ -29,9 +27,9 @@ MessageParser.prototype = {
       }
 
       var lines = tmp.split("\r\n");
-      _.each(lines, function(raw){
+      Common._.each(lines, function(raw){
         var message = new Message(raw);
-        self.emitter.emit("MessageParser.parse", message);
+        Common.emitter.emit("MessageParser.parse", message);
       });
 
       this.parse();

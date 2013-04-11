@@ -6,23 +6,16 @@ var Common = require("./common")
   , path = require("path")
   , fs = require("fs")
   , CommandPrivateMessage = require("./command/privatemessage")
-  // , pluginWeather = require("./plugin/weather")
 ;
-
-var logger = {
-  log: function(message) {
-    console.log(message);
-  }
-};
 
 function Bot() {
   var self = this;
   this.messageParser = new MessageParser();
   this.command = new Command(this);
 
-  Common.emitter.on("Connection.write", function(message){ self.connection.write(message); });
+  Common.emitter.on("Connection.write", function(message){ self.stats.linesWritten++; self.connection.write(message); });
   Common.emitter.on("Connection.data", function(data){ self.messageParser.add(data); });
-  Common.emitter.on("MessageParser.parse", function(message){ self.command.factory(message); });
+  Common.emitter.on("MessageParser.parse", function(message){ self.stats.linesRead++; self.command.factory(message); });
   Common.emitter.on("Command.disconnect", function(message){ self.connection.close(); });
   Common.emitter.on("Command.privmsg", function(message){ self.runPlugins(message); });
 }
@@ -37,6 +30,10 @@ Bot.prototype = {
   serverName: null,
   isRegistered: false,
   connection: null,
+  stats: {
+    linesRead: 0,
+    linesWritten: 0
+  },
   run: function() {
     this.registerPlugins();
     this.connection = new Connection('localhost', 6668);
@@ -48,10 +45,17 @@ Bot.prototype = {
   },
   privmsg: function(to, message) {
     // convenience method for being lazy
+    // actually, i could implement throttle control here to prevent excess flood
     this._privmsg.execute(to, message);
   },
   updateConsole: function() {
-    logger.log("in("+ this.connection.getBytesRead() +") out("+ this.connection.getBytesWritten() +") ");
+    var mem = process.memoryUsage();
+
+    Common.logger.log(
+      "bytes[in("+ this.connection.getBytesRead() +") out("+ this.connection.getBytesWritten() +")] "+
+      "commands[in("+ this.stats.linesRead +") out("+ this.stats.linesWritten +")] "+
+      "mem["+ (mem.rss/1024/1024).toFixed(2) +"m]"
+    );
   },
   registerPlugins: function() {
     var self = this

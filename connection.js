@@ -47,8 +47,8 @@ Connection.prototype = {
     this.alive = false;
 
     var seconds = 5000 * (this.attempts+.9);
-    this.attempts = this.attempts + 1;
     Common.logger.log("close calling reconnect in "+ (seconds/1000) +" attempts "+ this.attempts);
+    this.attempts = this.attempts + 1;
 
     var self = this;
     setTimeout(function(){ 
@@ -57,6 +57,7 @@ Connection.prototype = {
   },
   end: function() {
     Common.logger.log("end");
+    this.bot.isRegistered = false;
     this.alive = false;
   }
 };

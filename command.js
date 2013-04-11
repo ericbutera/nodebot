@@ -26,7 +26,7 @@ Command.prototype = {
       console.log(privMsg);
       Common.emitter.emit("Command.privmsg", privMsg);
     } else if ("PING" == msg.substr(0,4)) {
-      var c = new CommandPong(message);
+      var c = new CommandPong(this.bot);
       c.execute();
     } else if ("004" == three) {
       var c = new CommandJoinChannel();

@@ -8,20 +8,34 @@ var weather = {
   parse: function(message, data) {
     Common.logger.log("parsing weather");
     try {
-      var data = JSON.parse(data.toString('utf8'));
+
+      var raw = data.toString('utf8');
+      var data = JSON.parse(raw);
       var item = data.query.results.channel.item;
       var response = item.title +": "+ item.condition.text +", "+ item.condition.temp +"F. High "+ item.forecast[0].high +"F Low "+ item.forecast[0].low +"F";
       this.bot.privmsg(message.to, response);
     } catch (e) { this.error(message); }
   },
   fetch: function(message, zip) {
+    var self = this;
+
+    /* cached version for testing 
+    var fs = require("fs");
+    var path = __dirname + "/moo.json";
+    console.log("path: "+ path);
+    fs.readFile(path, 'utf8', function(err, data){
+      if (err) throw err;
+      self.parse(message, data);
+    });
+    return;
+    */
+
     var options = {
       host: 'query.yahooapis.com',
       post: 80,
       path: "/v1/public/yql?q=select%20item%20from%20weather.forecast%20where%20location%3D" + encodeURIComponent(zip)  + "&format=json"
     };
 
-    var self = this;
     try {
       http.get(options, function(res) {
           res.on("data", function(data){ self.parse(message, data); });

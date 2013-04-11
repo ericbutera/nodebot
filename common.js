@@ -7,7 +7,7 @@ module.exports = {
   logger: {
     log: function(m) { 
       var date = new Date();
-      console.log("["+ date.getFullYear() +"-"+ date.getMonth() +"-"+ date.getDay() +"] "+ m);
+      console.log("["+ date.getFullYear() +"-"+ date.getMonth()+1 +"-"+ date.getDay() +"] "+ m);
     }
   },
   '_': _

@@ -9,7 +9,6 @@ CommandRegister.prototype = {
   execute: function() {
     if (!this.bot.isRegistered) {
       var config = this.bot.config;
-      console.log("registering bot!");
 
       var nick = new CommandNick(this.bot);
       nick.execute();

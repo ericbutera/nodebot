@@ -21,12 +21,13 @@ var Parser = {
   parse: function(message) {
     var raw = message.message;
 
-/*
+    /*
     for (var x=0; x < raw.length; ++x) {
       console.log("x "+ x +" chr: "+ raw.slice(x, x+1) +" code: "+ raw.charCodeAt(x));
     }
     return;
-*/
+    */
+
     var toEndOffset = raw.indexOf(" ", 8);
     var to = raw.slice(8, toEndOffset);
 

@@ -1,0 +1,7 @@
+- message queue so people cannot request things enough to flood the bot off
+  - max number of queued commands
+  - max number of queued commands per user
+  - max number of lines to be sent in N seconds
+
+
+
